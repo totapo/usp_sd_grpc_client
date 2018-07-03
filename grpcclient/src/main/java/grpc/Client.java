@@ -33,13 +33,15 @@ package grpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import protobufgencode.GreeterGrpc;
-import protobufgencode.HelloRequest;
-import protobufgencode.HelloResponse;
+import protobufgencode.EPGrpc;
+import protobufgencode.LongRequest;
+import protobufgencode.LongResponse;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.protobuf.Empty;
 
 /**
  * A simple client that requests a greeting from the {@link HelloWorldServer}.
@@ -48,14 +50,14 @@ public class Client {
   private static final Logger logger = Logger.getLogger(Client.class.getName());
 
   private final ManagedChannel channel;
-  private final GreeterGrpc.GreeterBlockingStub blockingStub;
+  private final EPGrpc.EPBlockingStub blockingStub;
 
   /** Construct client connecting to HelloWorld server at {@code host:port}. */
   public Client(String host, int port) {
     channel = ManagedChannelBuilder.forAddress(host, port)
         .usePlaintext(true)
         .build();
-    blockingStub = GreeterGrpc.newBlockingStub(channel);
+    blockingStub = EPGrpc.newBlockingStub(channel);
   }
 
   public void shutdown() throws InterruptedException {
@@ -63,33 +65,60 @@ public class Client {
   }
 
   /** Say hello to server. */
-  public void greet(String name) {
+  
+  public void testVoid(){
+	  try {
+	      logger.info("Will try to run tests ");
+	      Empty req = Empty.newBuilder().build();
+	      //marcar tempo
+	      blockingStub.testVoid(req);
+	      //marcar tempo
+	      logger.info("Done");
+	    } catch (RuntimeException e) {
+	      logger.log(Level.WARNING, "RPC failed", e);
+	      return;
+	    }
+  }
+  
+  public long testLong(long val){
+	  try {
+	      logger.info("Will try to run tests ");
+	      LongRequest req = LongRequest.newBuilder().setNumero(val).build();
+	      //marcar tempo
+	      LongResponse r = blockingStub.testLong(req);
+	      //marcar tempo
+	      logger.info("Done");
+	      long resp = r.getResposta();
+	      return resp;
+	    } catch (RuntimeException e) {
+	      logger.log(Level.WARNING, "RPC failed", e);
+	      return Long.MAX_VALUE;
+	    }
+  }
+  
+  public long testEightLong(long v1, long v2, long v3, long v4){
+	  return 0;
+  }
+  
+  public void runTests() {
     try {
-      logger.info("Will try to greet " + name + " ...");
-      HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-      HelloResponse response = blockingStub.sayHello(request);
-      logger.info("Greeting: " + response.getMessage());
+      logger.info("Will try to run tests ");
+      
+      Empty req = Empty.newBuilder().build();
+      //marcar tempo
+      blockingStub.testVoid(req);
+      //marcar tempo
+      
+      
+      
+      //HelloRequest request = HelloRequest.newBuilder().setName(name).build();
+      //HelloResponse response = blockingStub.sayHello(request);
+      logger.info("Done");
     } catch (RuntimeException e) {
       logger.log(Level.WARNING, "RPC failed", e);
       return;
     }
   }
 
-  /**
-   * Greet server. If provided, the first element of {@code args} is the name to use in the
-   * greeting.
-   */
-  public static void main(String[] args) throws Exception {
-    Client client = new Client("localhost", 50051);
-    try {
-      /* Access a service running on the local machine on port 50051 */
-      String user = "world";
-      if (args.length > 0) {
-        user = args[0]; /* Use the arg as the name to greet if provided */
-      }
-      client.greet(user);
-    } finally {
-      client.shutdown();
-    }
-  }
+  
 }

@@ -8,7 +8,7 @@ public class Main {
 	   * greeting.
 	   */
 	  public static void main(String[] args) throws Exception {
-	    Client client = new Client("localhost", 50051);
+	    Client client = new Client("192.168.0.25", 50051);
 	    try {
 	      client.runTests();
 	    } finally {

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>epsistdist</groupId>
   <artifactId>grpcclient</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1</version>
   <name>grpcclient</name>
   <packaging>jar</packaging>
  
@@ -74,7 +74,7 @@
 		<configuration>
 		  <archive>
 		    <manifest>
-		      <mainClass>jpmygroup.App</mainClass>
+		      <mainClass>client.Main</mainClass>
 		    </manifest>
 		  </archive>
 		  <descriptorRefs>
